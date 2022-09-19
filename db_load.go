@@ -67,17 +67,21 @@ func (db *FlashDB) buildStringRecord(r *record) error {
 	key := string(r.meta.key)
 	member := string(r.meta.member)
 
-	switch r.getMark() {
+	mark := r.getMark()
+	switch mark {
 	case StringSet:
 		db.strStore.Insert([]byte(key), member)
 	case StringRem:
 		db.strStore.Delete([]byte(key))
 		db.exps.HDel(String, key)
-	case StringExpire:
+	case StringExpire, StringSetExpire:
 		if r.timestamp < uint64(time.Now().Unix()) {
 			db.strStore.Delete([]byte(key))
 			db.exps.HDel(String, key)
 		} else {
+			if mark == StringSetExpire {
+				db.strStore.Insert([]byte(key), member)
+			}
 			db.setTTL(String, key, int64(r.timestamp))
 		}
 	}

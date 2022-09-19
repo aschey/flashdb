@@ -19,7 +19,7 @@ func (tx *Tx) SetEx(key string, value string, duration int64) (err error) {
 	}
 
 	ttl := time.Now().Unix() + duration
-	e := newRecordWithExpire([]byte(key), nil, ttl, StringRecord, StringExpire)
+	e := newRecordWithExpire([]byte(key), []byte(value), ttl, StringRecord, StringSetExpire)
 	tx.addRecord(e)
 
 	return

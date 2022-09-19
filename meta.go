@@ -21,6 +21,7 @@ const (
 	StringSet uint16 = iota
 	StringRem
 	StringExpire
+	StringSetExpire
 )
 
 // The operations on Hash.
