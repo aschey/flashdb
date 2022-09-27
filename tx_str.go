@@ -35,6 +35,11 @@ func (tx *Tx) Get(key string) (val string, err error) {
 	return
 }
 
+// Keys returns all keys in the set
+func (tx *Tx) Keys() (keys []string) {
+	return tx.db.strStore.Keys()
+}
+
 // Delete deletes the given key.
 func (tx *Tx) Delete(key string) error {
 	e := newRecord([]byte(key), nil, StringRecord, StringRem)

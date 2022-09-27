@@ -27,6 +27,11 @@ func (tx *Tx) HGet(key string, field string) string {
 	return toString(tx.db.hashStore.HGet(key, field))
 }
 
+// HKeys returns all keys in the set
+func (tx *Tx) HKeys() []string {
+	return tx.db.hashStore.Keys()
+}
+
 // HGetAll returns all fields and values stored at key. If the key has expired,
 // the key is evicted.
 func (tx *Tx) HGetAll(key string) []string {
@@ -87,8 +92,8 @@ func (tx *Tx) HLen(key string) int {
 	return tx.db.hashStore.HLen(key)
 }
 
-// HKeys returns all fields stored at key. If the key has expired, the key is evicted.
-func (tx *Tx) HKeys(key string) (val []string) {
+// HFields returns all fields stored at key. If the key has expired, the key is evicted.
+func (tx *Tx) HFields(key string) (val []string) {
 	if tx.db.hasExpired(key, Hash) {
 		tx.db.evict(key, Hash)
 		return nil

@@ -51,6 +51,11 @@ func (tx *Tx) ZRank(key string, member string) int64 {
 	return tx.db.zsetStore.ZRank(key, member)
 }
 
+// ZKeys returns all keys in the set
+func (tx *Tx) ZKeys() []string {
+	return tx.db.zsetStore.Keys()
+}
+
 // ZRevRank returns the rank of the member at key, with the scores ordered from
 // high to low. If the key has expired, the key is evicted.
 func (tx *Tx) ZRevRank(key string, member string) int64 {

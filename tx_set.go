@@ -104,6 +104,11 @@ func (tx *Tx) SMembers(key string) (values []string) {
 	return
 }
 
+// SKeys returns all keys in the set
+func (tx *Tx) SKeys() (keys []string) {
+	return tx.db.setStore.Keys()
+}
+
 // SUnion returns the members of the set resulting from union of all the given
 // keys. The members' type is string. If any key has expired, the key is evicted.
 func (tx *Tx) SUnion(keys ...string) (values []string) {
