@@ -28,8 +28,18 @@ func (tx *Tx) HGet(key string, field string) string {
 }
 
 // HKeys returns all keys in the set
-func (tx *Tx) HKeys() []string {
-	return tx.db.hashStore.Keys()
+func (tx *Tx) HKeys() (keys []string) {
+	curKeys := tx.db.hashStore.Keys()
+
+	for _, k := range curKeys {
+		if tx.db.hasExpired(k, Hash) {
+			tx.db.evict(k, Hash)
+
+		} else {
+			keys = append(keys, k)
+		}
+	}
+	return
 }
 
 // HGetAll returns all fields and values stored at key. If the key has expired,

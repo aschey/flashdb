@@ -52,8 +52,18 @@ func (tx *Tx) ZRank(key string, member string) int64 {
 }
 
 // ZKeys returns all keys in the set
-func (tx *Tx) ZKeys() []string {
-	return tx.db.zsetStore.Keys()
+func (tx *Tx) ZKeys() (keys []string) {
+	curKeys := tx.db.zsetStore.Keys()
+
+	for _, k := range curKeys {
+		if tx.db.hasExpired(k, ZSet) {
+			tx.db.evict(k, ZSet)
+
+		} else {
+			keys = append(keys, k)
+		}
+	}
+	return
 }
 
 // ZRevRank returns the rank of the member at key, with the scores ordered from

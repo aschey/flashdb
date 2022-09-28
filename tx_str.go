@@ -37,7 +37,17 @@ func (tx *Tx) Get(key string) (val string, err error) {
 
 // Keys returns all keys in the set
 func (tx *Tx) Keys() (keys []string) {
-	return tx.db.strStore.Keys()
+	curKeys := tx.db.strStore.Keys()
+
+	for _, k := range curKeys {
+		if tx.db.hasExpired(k, String) {
+			tx.db.evict(k, String)
+
+		} else {
+			keys = append(keys, k)
+		}
+	}
+	return
 }
 
 // Delete deletes the given key.

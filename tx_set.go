@@ -106,7 +106,17 @@ func (tx *Tx) SMembers(key string) (values []string) {
 
 // SKeys returns all keys in the set
 func (tx *Tx) SKeys() (keys []string) {
-	return tx.db.setStore.Keys()
+	curKeys := tx.db.setStore.Keys()
+
+	for _, k := range curKeys {
+		if tx.db.hasExpired(k, Set) {
+			tx.db.evict(k, Set)
+
+		} else {
+			keys = append(keys, k)
+		}
+	}
+	return
 }
 
 // SUnion returns the members of the set resulting from union of all the given
